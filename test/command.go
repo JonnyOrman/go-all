@@ -1,19 +1,26 @@
 package test
 
 import (
-	"fmt"
+	"os"
+	"path/filepath"
 
+	"github.com/jonnyorman/go-all/command"
 	"github.com/spf13/cobra"
 )
 
-var testCmd = &cobra.Command{
+var goAllCommand = command.NewCommand("Testing", "test")
+
+var cobraCommand = &cobra.Command{
 	Use:   "test",
 	Short: "Test commands",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("TODO - test")
+		ex, _ := os.Executable()
+		directory := filepath.Dir(ex)
+
+		goAllCommand.ExecuteAllIn(directory)
 	},
 }
 
 func AddTo(parentCommand *cobra.Command) {
-	parentCommand.AddCommand(testCmd)
+	parentCommand.AddCommand(cobraCommand)
 }

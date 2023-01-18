@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var modCmd = &cobra.Command{
+var command = &cobra.Command{
 	Use:   "mod",
 	Short: "mod commands",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -16,6 +16,6 @@ var modCmd = &cobra.Command{
 }
 
 func AddTo(parentCommand *cobra.Command) {
-	tidy.AddTo(modCmd)
-	parentCommand.AddCommand(modCmd)
+	tidy.AddTo(command)
+	parentCommand.AddCommand(command)
 }

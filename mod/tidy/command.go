@@ -1,19 +1,26 @@
 package tidy
 
 import (
-	"fmt"
+	"os"
+	"path/filepath"
 
+	"github.com/jonnyorman/go-all/command"
 	"github.com/spf13/cobra"
 )
 
-var tidyCmd = &cobra.Command{
+var goAllCommand = command.NewCommand("Tidying", "mod tidy")
+
+var cobraCommand = &cobra.Command{
 	Use:   "tidy",
 	Short: "tidy commands",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("TODO - tidy")
+		ex, _ := os.Executable()
+		directory := filepath.Dir(ex)
+
+		goAllCommand.ExecuteAllIn(directory)
 	},
 }
 
 func AddTo(parentCommand *cobra.Command) {
-	parentCommand.AddCommand(tidyCmd)
+	parentCommand.AddCommand(cobraCommand)
 }

@@ -1,19 +1,26 @@
 package build
 
 import (
-	"fmt"
+	"os"
+	"path/filepath"
 
+	"github.com/jonnyorman/go-all/command"
 	"github.com/spf13/cobra"
 )
 
-var buildCmd = &cobra.Command{
+var goAllCommand = command.NewCommand("Building", "build")
+
+var cobraCommand = &cobra.Command{
 	Use:   "build",
 	Short: "build commands",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("TODO - build")
+		ex, _ := os.Executable()
+		directory := filepath.Dir(ex)
+
+		goAllCommand.ExecuteAllIn(directory)
 	},
 }
 
 func AddTo(parentCommand *cobra.Command) {
-	parentCommand.AddCommand(buildCmd)
+	parentCommand.AddCommand(cobraCommand)
 }
