@@ -7,11 +7,11 @@ func GenerateCommand(action string, args string) *Command {
 
 	modExecutor := NewModExecutor(config)
 
-	directoryExecutor := NewDirectoryExecutor(config, modFilePathConstructor, modExecutor)
+	directoryExecutor := NewModDirectoryExecutor(config, modFilePathConstructor, modExecutor)
 
 	subdirectoryConstructor := NewSubdirectoryConstructor()
 
-	subdirectoriesExecutor := NewSubdirectoriesExecutor(subdirectoryConstructor)
+	subdirectoriesExecutor := NewModSubdirectoriesExecutor(subdirectoryConstructor)
 
-	return NewCommand(config, directoryExecutor, subdirectoriesExecutor)
+	return NewCommand(directoryExecutor, subdirectoriesExecutor)
 }
