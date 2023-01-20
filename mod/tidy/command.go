@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var goAllCommand = command.NewCommand("Tidying", "mod tidy")
+var goAllCommand = command.GenerateCommand("Tidying", "mod tidy")
 
 var cobraCommand = &cobra.Command{
 	Use:   "tidy",

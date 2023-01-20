@@ -1,54 +1,26 @@
 package command
 
-import (
-	"fmt"
-	"io/ioutil"
-	"os"
-	"os/exec"
-	"strings"
-
-	"golang.org/x/mod/modfile"
-)
-
 type Command struct {
-	action string
-	args   string
+	directoryExecutor      DirectoryExecutor
+	subDirectoriesExecutor SubdirectoriesExecutor
 }
 
-func NewCommand(action string, args string) *Command {
+func NewCommand(
+	directoryExecutor DirectoryExecutor,
+	subDirectoriesExecutor SubdirectoriesExecutor,
+) *Command {
 	this := new(Command)
 
-	this.action = action
-	this.args = args
+	this.directoryExecutor = directoryExecutor
+	this.subDirectoriesExecutor = subDirectoriesExecutor
 
 	return this
 }
 
 func (this Command) ExecuteAllIn(directory string) {
-	modFile := directory + "/go.mod"
-	_, modFileErr := os.Stat(modFile)
+	ok := this.directoryExecutor.Execute(directory)
 
-	if modFileErr == nil {
-		modFileBytes, _ := ioutil.ReadFile(modFile)
-		modName := modfile.ModulePath(modFileBytes)
-		fmt.Println(this.action + " " + modName)
-
-		goCmd := exec.Command("go", strings.Split(this.args, " ")...)
-		goCmd.Dir = directory
-
-		goCmd.Start()
-
-		goCmd.Wait()
-	}
-
-	files, err := ioutil.ReadDir(directory)
-	if err != nil {
-		panic(err)
-	}
-
-	for _, fileInfo := range files {
-		if fileInfo.IsDir() {
-			this.ExecuteAllIn(directory + "/" + fileInfo.Name())
-		}
+	if ok {
+		this.subDirectoriesExecutor.Execute(directory, this.directoryExecutor)
 	}
 }

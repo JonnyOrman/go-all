@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var goAllCommand = command.NewCommand("Testing", "test")
+var goAllCommand = command.GenerateCommand("Testing", "test")
 
 var cobraCommand = &cobra.Command{
 	Use:   "test",
