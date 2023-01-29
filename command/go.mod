@@ -5,6 +5,7 @@ go 1.19
 replace github.com/jonnyorman/go-all/command => ./command
 
 require (
+	github.com/go-playground/assert v1.2.1
 	github.com/stretchr/testify v1.8.1
 	golang.org/x/mod v0.7.0
 )
