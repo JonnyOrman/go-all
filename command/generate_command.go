@@ -5,13 +5,46 @@ func GenerateCommand(action string, args string) *Command {
 
 	modFilePathConstructor := NewModFilePathConstructor()
 
-	modExecutor := NewModExecutor(config)
+	fileModNameProvider := NewFileModNameProvider()
 
-	directoryExecutor := NewModDirectoryExecutor(config, modFilePathConstructor, modExecutor)
+	modLogger := NewActionModLogger(
+		fileModNameProvider,
+		config,
+	)
+
+	modCmdCreator := NewModCmdCreator(
+		config,
+	)
+
+	modCmdRunner := NewModCmdRunner()
+
+	modExecutor := NewModExecutor(
+		modLogger,
+		modCmdCreator,
+		modCmdRunner,
+	)
+
+	directoryExecutor := NewModDirectoryExecutor(
+		config,
+		modFilePathConstructor,
+		modExecutor,
+	)
+
+	ioutilFileInfoProvider := NewIoutilFileInfoProvider()
 
 	subdirectoryConstructor := NewSubdirectoryConstructor()
 
-	subdirectoriesExecutor := NewModSubdirectoriesExecutor(subdirectoryConstructor)
+	directoryFileInfoExecutor := NewDirectoryFileInfoExecutor(
+		subdirectoryConstructor,
+	)
 
-	return NewCommand(directoryExecutor, subdirectoriesExecutor)
+	subdirectoriesExecutor := NewModSubdirectoriesExecutor(
+		ioutilFileInfoProvider,
+		directoryFileInfoExecutor,
+	)
+
+	return NewCommand(
+		directoryExecutor,
+		subdirectoriesExecutor,
+	)
 }

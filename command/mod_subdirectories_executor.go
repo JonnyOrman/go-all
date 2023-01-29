@@ -1,31 +1,35 @@
 package command
 
-import "io/ioutil"
-
 type ModSubdirectoriesExecutor struct {
-	subdirectoryConstructor *SubdirectoryConstructor
+	fileInfoProvider          FileInfoProvider
+	directoryFileInfoExecutor FileInfoExecutor
 }
 
 func NewModSubdirectoriesExecutor(
-	subdirectoryConstructor *SubdirectoryConstructor,
+	fileInfoProvider FileInfoProvider,
+	directoryFileInfoExecutor FileInfoExecutor,
 ) *ModSubdirectoriesExecutor {
 	this := new(ModSubdirectoriesExecutor)
 
-	this.subdirectoryConstructor = subdirectoryConstructor
+	this.fileInfoProvider = fileInfoProvider
+	this.directoryFileInfoExecutor = directoryFileInfoExecutor
 
 	return this
 }
 
-func (this ModSubdirectoriesExecutor) Execute(directory string, directoryExecutor DirectoryExecutor) bool {
-	files, err := ioutil.ReadDir(directory)
-	if err != nil {
-		panic(err)
-	}
+func (this ModSubdirectoriesExecutor) Execute(
+	directory string,
+	directoryExecutor DirectoryExecutor,
+) bool {
+	files := this.fileInfoProvider.Get(directory)
 
 	for _, fileInfo := range files {
 		if fileInfo.IsDir() {
-			subdirectory := this.subdirectoryConstructor.Construct(directory, fileInfo.Name())
-			directoryExecutor.Execute(subdirectory)
+			this.directoryFileInfoExecutor.Execute(
+				directory,
+				fileInfo,
+				directoryExecutor,
+			)
 		}
 	}
 
